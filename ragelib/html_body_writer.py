@@ -11,7 +11,9 @@ class HTMLBodyWriter():
 
     @staticmethod
     def make_image_element(image_bytes):
-        return f"<img src='data:image/png;base64,{image_bytes}' />"
+        if image_bytes:
+            return f"<img src='data:image/png;base64,{image_bytes}' />"
+        return ""
 
 
     def make_table_element(self, heading_cells, data_cells):

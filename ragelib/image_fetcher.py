@@ -18,7 +18,7 @@ class ImageFetcher():
 
 
     def get_graph_screenshot(self, url, driver):
-        wait = WebDriverWait(driver, timeout=300)
+        wait = WebDriverWait(driver, timeout=60)
         self.logger.debug(f"Begun fetching url {url}")
         driver.get(url)
 
@@ -36,7 +36,12 @@ class ImageFetcher():
 
     def fetch_images(self):
         for item in tqdm(self.data, desc='Fetching graphs...'):
-            item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], self.driver)
+            try:
+                item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], self.driver)
+            except Exception as e:
+                self.logger.warn("Failed while fetching image for link "+item['graph_link'])
+                print(e)
+                item['graph_bytes'] = None
 
         self.driver.quit()
         return self.data
