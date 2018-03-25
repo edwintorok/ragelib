@@ -10,7 +10,7 @@ One of the key features of ragelib is the ability to fetch a rendered graph from
 
 Recommended use is with pipenv (`pip install pipenv`):
 ```
-pipenv install -e git+https://github.com/mcintyre94/ragelib.git#egg=ragelib
+pipenv install -e git+https://github.com/perf101/ragelib.git#egg=ragelib
 ```
 
 ## brief_parser

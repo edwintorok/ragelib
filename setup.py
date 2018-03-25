@@ -14,7 +14,7 @@ from setuptools import find_packages, setup, Command
 # Package meta-data.
 NAME = 'ragelib'
 DESCRIPTION = 'A helper library for RAGE'
-URL = 'https://github.com/mcintyre94/ragelib' # TODO: move to github!
+URL = 'https://github.com/perf101/ragelib'
 EMAIL = 'callum.mcintyre@citrix.com'
 AUTHOR = 'Callum McIntyre'
 REQUIRES_PYTHON = '>=3.6.0'
