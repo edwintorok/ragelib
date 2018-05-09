@@ -6,6 +6,11 @@ class ReportParser():
         self.logger = logger
 
     @staticmethod
+    def get_context(tr):
+        # Get the context from a row
+        return tr('td')[0].text.strip()
+
+    @staticmethod
     def get_description(tr):
         # Get the description from a row
         return tr('td')[1].text.strip()
@@ -40,6 +45,7 @@ class ReportParser():
             self.logger.warning(f"Report contains {len(data_rows) - len(visible_rows)} hidden rows. Freezing the brief report before saving it will make parsing faster.")
 
         data = [{
+            'context': self.get_context(row),
             'title': self.get_description(row),
             'graph_link': self.get_graph_link(row),
             'tds': self.get_data_tds(row)
