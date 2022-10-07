@@ -22,8 +22,10 @@ class ImageFetcher():
         self.logger.debug(f"Begun fetching url {url}")
         driver.get(url)
         
-        try:
-            WebDriverWait(driver, timeout=10).until(expected.alert_is_present())
+        wait.until(expected.visibility_of((By.ID, 'graph_title')))
+        self.logger.debug("Element #graph_title now visible, graph loading")
+        
+        if expected.alert_is_present():
             alert = driver.switch_to.alert
             if "About to plot" in alert.text:
                 alert.accept()
@@ -31,13 +33,9 @@ class ImageFetcher():
             else:
                 alert.dismiss()
                 self.logger.warn("Unexpected alert box dismissed")
-        except TimeoutException:
-            self.logger.debug("No alert box present")
             
         # On draw starting the progress_img element appears (spinner) and the graph title is unhidden. 
         # When done it disappears.
-        wait.until(expected.visibility_of_element_located((By.ID, 'graph_title')))
-        self.logger.debug("Element #graph_title now visible, graph loading")
         wait.until(expected.invisibility_of_element_located((By.ID, 'progress_img')))
         self.logger.debug("Element #progress_img now invisible, graph loaded")
 
