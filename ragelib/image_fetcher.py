@@ -22,7 +22,7 @@ class ImageFetcher():
         self.logger.debug(f"Begun fetching url {url}")
         driver.get(url)
         
-        wait.until(expected.visibility_of((By.ID, 'graph_title')))
+        wait.until(expected.visibility_of_element_located((By.ID, 'graph_title')))
         self.logger.debug("Element #graph_title now visible, graph loading")
         
         if expected.alert_is_present():
