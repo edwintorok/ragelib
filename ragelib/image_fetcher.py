@@ -27,8 +27,8 @@ class ImageFetcher():
         wait.until(expected.visibility_of_element_located((By.ID, 'graph_title')))
         self.logger.debug("Element #graph_title now visible, graph loading")
         
-        if expected.alert_is_present():
-            alert = driver.switch_to.alert
+        alert = expected.alert_is_present()(driver)
+        if alert:
             if "About to plot" in alert.text:
                 alert.accept()
                 self.logger.warn("Many points alert box accepted")
