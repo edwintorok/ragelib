@@ -2,6 +2,7 @@ from selenium.common.exceptions import TimeoutException
 from selenium.webdriver import Firefox
 from selenium.webdriver.common.by import By
 from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.firefox.service import Service
 from selenium.webdriver.support import expected_conditions as expected
 from selenium.webdriver.support.wait import WebDriverWait
 from tqdm import tqdm
@@ -15,7 +16,8 @@ class ImageFetcher():
         options.add_argument('-headless')
 
         logger.info(f"Using {geckodriver_path} for geckodriver")
-        self.driver = Firefox(executable_path=geckodriver_path, firefox_options=options)
+        serv = Service(geckodriver_path)
+        self.driver = Firefox(service=serv, options=options)
 
     def get_graph_screenshot(self, url, driver):
         wait = WebDriverWait(driver, timeout=60)
@@ -39,7 +41,7 @@ class ImageFetcher():
         wait.until(expected.invisibility_of_element_located((By.ID, 'progress_img')))
         self.logger.debug("Element #progress_img now invisible, graph loaded")
 
-        canvas = driver.find_element_by_tag_name('canvas')
+        canvas = driver.find_element(By.TAG_NAME, 'canvas')
         canvas_bytes = canvas.screenshot_as_base64
 
         return canvas_bytes
