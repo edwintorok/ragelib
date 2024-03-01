@@ -46,8 +46,11 @@ class ImageFetcher():
         return canvas_bytes
 
     def fetch_images(self):
+        driver = Firefox(service=self.serv, options=self.options)
+        driver.get("about:blank")
+        orig = driver.current_window_handle
         for item in tqdm(self.data, desc='Fetching graphs...'):
-            driver = Firefox(service=self.serv, options=self.options)
+            driver.switch_to.new_window('tab')
             try:
                 item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], driver)
                 item['graph_exception'] = None
@@ -60,5 +63,8 @@ class ImageFetcher():
                 print(e)
                 item['graph_exception'] = str(e)
                 item['graph_bytes'] = None
-            driver.quit()
+            driver.close()
+            # have to switch back, otherwise we can't open new tabs anymore
+            driver.switch_to.window(orig)
+        driver.quit()
         return self.data
