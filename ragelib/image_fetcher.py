@@ -12,12 +12,11 @@ class ImageFetcher():
         self.data = data
         self.logger = logger
 
-        options = Options()
-        options.add_argument('-headless')
+        self.options = Options()
+        self.options.add_argument('-headless')
 
         logger.info(f"Using {geckodriver_path} for geckodriver")
-        serv = Service(geckodriver_path)
-        self.driver = Firefox(service=serv, options=options)
+        self.serv = Service(geckodriver_path)
 
     def get_graph_screenshot(self, url, driver):
         wait = WebDriverWait(driver, timeout=60)
@@ -48,8 +47,9 @@ class ImageFetcher():
 
     def fetch_images(self):
         for item in tqdm(self.data, desc='Fetching graphs...'):
+            driver = Firefox(service=self.serv, options=self.options)
             try:
-                item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], self.driver)
+                item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], driver)
                 item['graph_exception'] = None
             except TimeoutException:
                 self.logger.warn("Failed while fetching image for link "+item['graph_link'])
@@ -60,6 +60,5 @@ class ImageFetcher():
                 print(e)
                 item['graph_exception'] = str(e)
                 item['graph_bytes'] = None
-
-        self.driver.quit()
+            driver.quit()
         return self.data
