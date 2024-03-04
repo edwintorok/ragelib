@@ -46,25 +46,24 @@ class ImageFetcher():
         return canvas_bytes
 
     def fetch_images(self):
-        driver = Firefox(service=self.serv, options=self.options)
-        driver.get("about:blank")
-        orig = driver.current_window_handle
-        for item in tqdm(self.data, desc='Fetching graphs...'):
-            driver.switch_to.new_window('tab')
-            try:
-                item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], driver)
-                item['graph_exception'] = None
-            except TimeoutException:
-                self.logger.warn("Failed while fetching image for link "+item['graph_link'])
-                item['graph_exception'] = "TimeoutException"
-                item['graph_bytes'] = None
-            except Exception as e:
-                self.logger.warn("Failed while fetching image for link "+item['graph_link'])
-                print(e)
-                item['graph_exception'] = str(e)
-                item['graph_bytes'] = None
-            driver.close()
-            # have to switch back, otherwise we can't open new tabs anymore
-            driver.switch_to.window(orig)
-        driver.quit()
+        with Firefox(service=self.serv, options=self.options) as driver:
+            driver.get("about:blank")
+            orig = driver.current_window_handle
+            for item in tqdm(self.data, desc='Fetching graphs...'):
+                driver.switch_to.new_window('tab')
+                try:
+                    item['graph_bytes'] = self.get_graph_screenshot(item['graph_link'], driver)
+                    item['graph_exception'] = None
+                except TimeoutException:
+                    self.logger.warn("Failed while fetching image for link "+item['graph_link'])
+                    item['graph_exception'] = "TimeoutException"
+                    item['graph_bytes'] = None
+                except Exception as e:
+                    self.logger.warn("Failed while fetching image for link "+item['graph_link'])
+                    print(e)
+                    item['graph_exception'] = str(e)
+                    item['graph_bytes'] = None
+                driver.close()
+                # have to switch back, otherwise we can't open new tabs anymore
+                driver.switch_to.window(orig)
         return self.data
